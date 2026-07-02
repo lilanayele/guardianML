@@ -3,13 +3,15 @@ import pandas as pd
 
 rf = joblib.load("models/random_forest.pkl")
 
-target_col = "attack_detected"
-
 def predict(sample_df):
 
-    # REMOVE TARGET IF IT EXISTS
-    if target_col in sample_df.columns:
-        sample_df = sample_df.drop(columns=[target_col])
+    # REMOVE LABEL IF PRESENT
+    if "attack_detected" in sample_df.columns:
+        sample_df = sample_df.drop(columns=["attack_detected"])
+
+    # REMOVE ID COLUMN (CRITICAL FIX)
+    if "session_id" in sample_df.columns:
+        sample_df = sample_df.drop(columns=["session_id"])
 
     # PREDICT
     pred = rf.predict(sample_df)[0]
@@ -17,9 +19,6 @@ def predict(sample_df):
 
     risk = int(proba * 100)
 
-    if pred == 1:
-        status = "⚠️ Attack Detected"
-    else:
-        status = "✅ Normal"
+    status = "⚠️ Attack Detected" if pred == 1 else "✅ Normal"
 
     return pred, status, risk
