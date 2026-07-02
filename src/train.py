@@ -44,5 +44,6 @@ iso.fit(X)
 # SAVE MODELS
 joblib.dump(rf, "models/random_forest.pkl")
 joblib.dump(iso, "models/isolation_forest.pkl")
+joblib.dump(encoders, "models/encoders.pkl")
 
 print("✅ Training complete. Models saved successfully.")
