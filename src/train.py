@@ -11,6 +11,10 @@ from feature_engineering import create_features
 # LOAD DATA
 df = load_data("data/raw/network_data.csv")
 
+# REMOVE ID COLUMN (IMPORTANT FIX)
+if "session_id" in df.columns:
+    df = df.drop(columns=["session_id"])
+
 # PREPROCESS
 df, encoders = preprocess_data(df)
 
@@ -20,7 +24,7 @@ df = create_features(df)
 # TARGET COLUMN
 target_col = "attack_detected"
 
-# SPLIT FEATURES & LABEL
+# SPLIT
 X = df.drop(columns=[target_col])
 y = df[target_col]
 
