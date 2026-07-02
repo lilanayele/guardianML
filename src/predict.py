@@ -2,16 +2,22 @@ import joblib
 import pandas as pd
 
 rf = joblib.load("models/random_forest.pkl")
+encoders = joblib.load("models/encoders.pkl")
+
 
 def predict(sample_df):
 
-    # REMOVE LABEL IF PRESENT
+    # REMOVE LABEL + ID
     if "attack_detected" in sample_df.columns:
         sample_df = sample_df.drop(columns=["attack_detected"])
 
-    # REMOVE ID COLUMN (CRITICAL FIX)
     if "session_id" in sample_df.columns:
         sample_df = sample_df.drop(columns=["session_id"])
+
+    # 🔥 ENCODE CATEGORICAL FEATURES (CRITICAL FIX)
+    for col, encoder in encoders.items():
+        if col in sample_df.columns:
+            sample_df[col] = encoder.transform(sample_df[col].astype(str))
 
     # PREDICT
     pred = rf.predict(sample_df)[0]
