@@ -17,23 +17,23 @@ df, encoders = preprocess_data(df)
 # FEATURE ENGINEERING
 df = create_features(df)
 
-# TARGET COLUMN (IMPORTANT FIX)
+# TARGET COLUMN
 target_col = "attack_detected"
 
-# SPLIT DATA
-X = df.drop(target_col, axis=1)
+# SPLIT FEATURES & LABEL
+X = df.drop(columns=[target_col])
 y = df[target_col]
 
-# TRAIN / TEST SPLIT
+# TRAIN TEST SPLIT
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# MODEL 1: Classification Model
+# MODEL 1: CLASSIFIER
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, y_train)
 
-# MODEL 2: Anomaly Detection Model
+# MODEL 2: ANOMALY DETECTOR
 iso = IsolationForest(contamination=0.05, random_state=42)
 iso.fit(X)
 
